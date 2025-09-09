@@ -32,30 +32,31 @@ async function example() {
     console.log('');
     */
 
-    // Example 3: Get current price for S&P500:w 
+    // Example 2: Get current price for S&P 500 ETF (SPY)
+
     console.log('💻 Getting current price for S&P 500 ETF (SPY)...');
     const spxPrice = await api.get('twelvedata', 'SPY');
     console.log('S&P 500 current price:', spxPrice);
     console.log('');
 
-    // Weather examples via Open-Meteo
-    console.log('🌤️ Getting current weather for Stockholm...');
+    // Example 3: Weather examples via Open-Meteo
+    console.log('🌤️ (3a) Getting current weather for Stockholm...');
     const stockholmWeather = await api.get('openmeteo', 'stockholm');
     console.log('Stockholm weather:', stockholmWeather);
     console.log('');
 
-    console.log('🌤️ Getting current weather for New York via coordinates...');
+    console.log('🌤️ (3b) Getting current weather for New York via coordinates...');
     const nycWeather = await api.get('openmeteo', { latitude: 40.7128, longitude: -74.0060, name: 'New York' });
     console.log('New York weather:', nycWeather);
     console.log('');
 
-    // Google News example
+    // Example 4: Google News example
     console.log('🗞️ Getting Google News headlines for Apple...');
     const gn = await api.get('googlenews', { q: 'Apple', lang: 'en', country: 'US', max: 5 });
     console.log('Google News (Apple):', gn);
     console.log('');
 
-    // Example 4: Error handling
+    // Example 5: Error handling
     console.log('❌ Testing error handling with invalid symbol...');
     try {
       await api.get('twelvedata', 'INVALID_SYMBOL_12345');
@@ -64,7 +65,7 @@ async function example() {
     }
     console.log('');
 
-    // Example 5: Testing unsupported source
+    // Example 6: Testing unsupported source
     console.log('❌ Testing unsupported source...');
     try {
       await api.get('unsupported', 'AAPL');
