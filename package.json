@@ -1,0 +1,28 @@
+{
+  "name": "dumb-api-sources",
+  "version": "1.0.0",
+  "description": "Easy connection to third-party APIs including twelvedata.com",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "test": "node test.js",
+    "start": "node src/index.js"
+  },
+  "keywords": [
+    "api",
+    "twelvedata",
+    "stock",
+    "finance",
+    "third-party"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.0",
+    "dotenv": "^17.2.2",
+    "rss-parser": "^3.13.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
