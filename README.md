@@ -159,7 +159,7 @@ Notes:
 - Uses public Google News RSS endpoint; no API key required.
 - Results depend on locale (`lang`, `country`).
 - Set `past24h: true` to filter results to items published within the last 24 hours.
-- Set `excludeSports: true` to remove common sports-related headlines (English/Swedish, includes horse sports).
+- Set `excludeSports: true` to remove common sports-related headlines (English/Swedish, includes horse sports) and blacklist popular sports domains by default (augment with `excludeDomains`).
 - Use `excludeKeywords` and `excludeDomains` for additional precise filtering.
 
 ## Available Methods

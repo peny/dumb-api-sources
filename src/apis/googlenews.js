@@ -45,7 +45,17 @@ class GoogleNewsAPI {
       : (excludeDomains ? [excludeDomains] : []);
 
     const allExcludeKeywords = [...new Set([...keywordList, ...preExcludeSportsKeywords])];
-    const allExcludeDomains = [...new Set(domainList)];
+    const defaultSportsDomains = excludeSports ? [
+      // English/global sports outlets
+      'espn.com', 'espncricinfo.com', 'cbssports.com', 'foxsports.com', 'nbcsports.com', 'skysports.com', 'tsn.ca', 'theathletic.com', 'bleacherreport.com', 'goal.com', 'si.com', 'sports.yahoo.com', 'bbc.co.uk/sport', 'bbc.com/sport',
+      // Hockey-specific
+      'nhl.com', 'thehockeynews.com',
+      // Soccer/football
+      'uefa.com', 'fifa.com', 'premierleague.com',
+      // Swedish sports outlets
+      'svt.se/sport', 'svenskafans.com', 'aftonbladet.se/sportbladet', 'expressen.se/sport', 'fotbollskanalen.se', 'hockeysverige.se'
+    ] : [];
+    const allExcludeDomains = [...new Set([...domainList, ...defaultSportsDomains])];
 
     const minusTerms = [
       ...allExcludeKeywords.map(term => `-${term.trim().includes(' ') ? '"' + term.trim() + '"' : term.trim()}`),
@@ -99,6 +109,11 @@ class GoogleNewsAPI {
           const host = new URL(i.link).hostname.toLowerCase();
           return !allExcludeDomains.some(d => {
             const needle = d.toLowerCase();
+            // allow entries like 'bbc.com/sport' by checking path when provided
+            if (needle.includes('/')) {
+              const url = new URL(i.link);
+              return url.hostname.toLowerCase().endsWith(needle.split('/')[0]) && url.pathname.toLowerCase().startsWith('/' + needle.split('/').slice(1).join('/'));
+            }
             return host === needle || host.endsWith('.' + needle) || host.includes(needle);
           });
         } catch {
