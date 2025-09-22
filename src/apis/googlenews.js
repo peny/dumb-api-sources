@@ -6,22 +6,35 @@ class GoogleNewsAPI {
     this.baseUrl = 'https://news.google.com/rss';
   }
 
-  // query can be a string like 'apple', or an object { q, lang, country, max }
+  // query can be a string like 'apple', or an object { q, lang, country, max, past24h }
   async getHeadlines(query) {
-    const { q, lang = 'en', country = 'US', max = 10 } = this.normalizeQuery(query);
+    const { q, lang = 'en', country = 'US', max = 10, past24h = false } = this.normalizeQuery(query);
 
     const url = `${this.baseUrl}/search?hl=${encodeURIComponent(lang)}&gl=${encodeURIComponent(country)}&q=${encodeURIComponent(q)}&ceid=${encodeURIComponent(country)}:${encodeURIComponent(lang)}`;
 
     const feed = await this.parser.parseURL(url);
 
     // Normalize items
-    const items = (feed.items || []).slice(0, max).map(item => ({
+    let items = (feed.items || []).map(item => ({
       title: item.title || null,
       link: item.link || null,
       published: item.isoDate || item.pubDate || null,
       source: (item.creator || item.author || '').toString() || null,
       snippet: item.contentSnippet || null
     }));
+
+    // Optional: filter to past 24 hours
+    if (past24h) {
+      const cutoff = Date.now() - 24 * 60 * 60 * 1000;
+      items = items.filter(i => {
+        if (!i.published) return false;
+        const t = Date.parse(i.published);
+        return Number.isFinite(t) && t >= cutoff;
+      });
+    }
+
+    // Respect max after filtering
+    items = items.slice(0, max);
 
     return {
       query: q,
@@ -40,7 +53,7 @@ class GoogleNewsAPI {
     if (query && typeof query === 'object' && query.q) {
       return query;
     }
-    throw new Error('GoogleNews: query must be a string or { q, lang?, country?, max? }');
+    throw new Error('GoogleNews: query must be a string or { q, lang?, country?, max?, past24h? }');
   }
 }
 
