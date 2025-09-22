@@ -6,9 +6,9 @@ class GoogleNewsAPI {
     this.baseUrl = 'https://news.google.com/rss';
   }
 
-  // query can be a string like 'apple', or an object { q, lang, country, max, past24h }
+  // query can be a string like 'apple', or an object { q, lang, country, max, past24h, excludeSports }
   async getHeadlines(query) {
-    const { q, lang = 'en', country = 'US', max = 10, past24h = false } = this.normalizeQuery(query);
+    const { q, lang = 'en', country = 'US', max = 10, past24h = false, excludeSports = false } = this.normalizeQuery(query);
 
     const url = `${this.baseUrl}/search?hl=${encodeURIComponent(lang)}&gl=${encodeURIComponent(country)}&q=${encodeURIComponent(q)}&ceid=${encodeURIComponent(country)}:${encodeURIComponent(lang)}`;
 
@@ -33,6 +33,20 @@ class GoogleNewsAPI {
       });
     }
 
+    // Optional: exclude common sports content
+    if (excludeSports) {
+      const sportsKeywords = [
+        'sport', 'sports', 'football', 'soccer', 'nba', 'nfl', 'mlb', 'nhl', 'tennis', 'golf', 'cricket', 'rugby',
+        'fifa', 'uefa', 'premier league', 'la liga', 'serie a', 'bundesliga', 'champions league', 'world cup',
+        'olympic', 'olympics', 'marathon', 'motogp', 'formula 1', 'f1', 'boxing', 'ufc', 'mma', 'ncaaf', 'ncaab'
+      ];
+      const pattern = new RegExp(`\\b(${sportsKeywords.map(k => k.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')).join('|')})\\b`, 'i');
+      items = items.filter(i => {
+        const haystack = [i.title, i.snippet, i.link, i.source].filter(Boolean).join(' ').toLowerCase();
+        return !pattern.test(haystack);
+      });
+    }
+
     // Respect max after filtering
     items = items.slice(0, max);
 
@@ -53,7 +67,7 @@ class GoogleNewsAPI {
     if (query && typeof query === 'object' && query.q) {
       return query;
     }
-    throw new Error('GoogleNews: query must be a string or { q, lang?, country?, max?, past24h? }');
+    throw new Error('GoogleNews: query must be a string or { q, lang?, country?, max?, past24h?, excludeSports? }');
   }
 }
 

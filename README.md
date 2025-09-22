@@ -59,6 +59,8 @@ const nyc = await dumbAPISources.get('openmeteo', { latitude: 40.7128, longitude
 const appleNews = await dumbAPISources.get('googlenews', { q: 'Apple', lang: 'en', country: 'US', max: 5 });
 // Only news from the past 24 hours
 const appleNews24h = await dumbAPISources.get('googlenews', { q: 'Apple', lang: 'en', country: 'US', max: 5, past24h: true });
+// Exclude sports-related articles
+const appleNoSports = await dumbAPISources.get('googlenews', { q: 'Apple', lang: 'en', country: 'US', excludeSports: true });
 // => { query, lang, country, items: [{ title, link, published, source, snippet }], total, source: 'googlenews' }
 ```
 
@@ -127,8 +129,8 @@ Notes:
 ### 3) Google News (RSS)
 - Inputs accepted by `get('googlenews', ...)`:
   - Query string, e.g., `"Apple"`, or
-  - Options object: `{ q: string, lang?: string, country?: string, max?: number, past24h?: boolean }`
-    - `lang` defaults to `en`, `country` defaults to `US`, `max` defaults to `10`, `past24h` defaults to `false`
+  - Options object: `{ q: string, lang?: string, country?: string, max?: number, past24h?: boolean, excludeSports?: boolean }`
+    - `lang` defaults to `en`, `country` defaults to `US`, `max` defaults to `10`, `past24h` defaults to `false`, `excludeSports` defaults to `false`
 - Output:
   ```json
   {
@@ -147,6 +149,7 @@ Notes:
 - Uses public Google News RSS endpoint; no API key required.
 - Results depend on locale (`lang`, `country`).
  - Set `past24h: true` to filter results to items published within the last 24 hours.
+ - Set `excludeSports: true` to remove common sports-related headlines.
 
 ## Available Methods
 - `get(source, query, options?)`

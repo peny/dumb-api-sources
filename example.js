@@ -51,9 +51,9 @@ async function example() {
     console.log('');
 
     // Example 4: Google News example
-    console.log('🗞️ Getting Google News headlines for Apple (past 24h)...');
-    const gn = await api.get('googlenews', { q: 'Apple', lang: 'en', country: 'US', max: 5, past24h: true });
-    console.log('Google News (Apple, past24h):', gn);
+    console.log('🗞️ Getting Google News headlines for Apple (past 24h, no sports)...');
+    const gn = await api.get('googlenews', { q: 'Apple', lang: 'en', country: 'US', max: 5, past24h: true, excludeSports: true });
+    console.log('Google News (Apple, past24h, excludeSports):', gn);
     console.log('');
 
     // Example 5: Error handling
