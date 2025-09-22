@@ -1,13 +1,15 @@
 import TwelveDataAPI from './apis/twelvedata.js';
 import OpenMeteoAPI from './apis/openmeteo.js';
 import GoogleNewsAPI from './apis/googlenews.js';
+import YahooFinanceAPI from './apis/yahoo.js';
 
 class DumbAPISources {
   constructor(config = {}) {
     this.apis = {
       twelvedata: new TwelveDataAPI(config.twelvedata?.apiKey),
       openmeteo: new OpenMeteoAPI(),
-      googlenews: new GoogleNewsAPI()
+      googlenews: new GoogleNewsAPI(),
+      yahoo: new YahooFinanceAPI()
     };
   }
 
@@ -42,10 +44,20 @@ class DumbAPISources {
 
     try {
       if (sourceLower === 'twelvedata') {
-        if (options.quote) {
-          return await this.apis.twelvedata.getQuote(symbol);
+        try {
+          if (options.quote) {
+            return await this.apis.twelvedata.getQuote(symbol);
+          }
+          return await this.apis.twelvedata.getCurrentPrice(symbol);
+        } catch (err) {
+          if (options?.fallback === 'yahoo' || options?.fallback === true) {
+            if (options.quote) {
+              return await this.apis.yahoo.getQuote(symbol);
+            }
+            return await this.apis.yahoo.getCurrentPrice(symbol);
+          }
+          throw err;
         }
-        return await this.apis.twelvedata.getCurrentPrice(symbol);
       }
 
       if (sourceLower === 'openmeteo') {
@@ -54,6 +66,13 @@ class DumbAPISources {
 
       if (sourceLower === 'googlenews') {
         return await this.apis.googlenews.getHeadlines(symbol);
+      }
+
+      if (sourceLower === 'yahoo') {
+        if (options.quote) {
+          return await this.apis.yahoo.getQuote(symbol);
+        }
+        return await this.apis.yahoo.getCurrentPrice(symbol);
       }
 
       throw new Error(`No implementation found for source: ${source}`);

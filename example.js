@@ -65,7 +65,13 @@ async function example() {
     console.log('Google News (Apple, filtered):', gn);
     console.log('');
 
-    // Example 5: Error handling
+    // Example 5: OMXS30 via TwelveData with Yahoo fallback
+    console.log('📊 Trying OMXS30 via TwelveData with Yahoo fallback...');
+    const omxs30 = await api.get('twelvedata', 'OMXS30', { fallback: 'yahoo' });
+    console.log('OMXS30:', omxs30);
+    console.log('');
+
+    // Example 6: Error handling
     console.log('❌ Testing error handling with invalid symbol...');
     try {
       await api.get('twelvedata', 'INVALID_SYMBOL_12345');
@@ -74,7 +80,7 @@ async function example() {
     }
     console.log('');
 
-    // Example 6: Testing unsupported source
+    // Example 7: Testing unsupported source
     console.log('❌ Testing unsupported source...');
     try {
       await api.get('unsupported', 'AAPL');
