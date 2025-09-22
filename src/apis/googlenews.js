@@ -36,9 +36,14 @@ class GoogleNewsAPI {
     // Optional: exclude common sports content
     if (excludeSports) {
       const sportsKeywords = [
+        // English
         'sport', 'sports', 'football', 'soccer', 'nba', 'nfl', 'mlb', 'nhl', 'tennis', 'golf', 'cricket', 'rugby',
         'fifa', 'uefa', 'premier league', 'la liga', 'serie a', 'bundesliga', 'champions league', 'world cup',
-        'olympic', 'olympics', 'marathon', 'motogp', 'formula 1', 'f1', 'boxing', 'ufc', 'mma', 'ncaaf', 'ncaab'
+        'olympic', 'olympics', 'marathon', 'motogp', 'formula 1', 'f1', 'boxing', 'ufc', 'mma', 'ncaaf', 'ncaab',
+        // Swedish
+        'idrott', 'fotboll', 'ishockey', 'hockey', 'handboll', 'innebandy', 'bandy', 'friidrott', 'skidor',
+        'längdskidor', 'alpint', 'skridsko', 'shl', 'allsvenskan', 'superettan', 'damallsvenskan', 'elitserien',
+        'svenska cupen', 'landslaget', 'vm', 'em', 'sm-guld'
       ];
       const pattern = new RegExp(`\\b(${sportsKeywords.map(k => k.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')).join('|')})\\b`, 'i');
       items = items.filter(i => {
