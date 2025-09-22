@@ -57,7 +57,19 @@ const nyc = await dumbAPISources.get('openmeteo', { latitude: 40.7128, longitude
 
 // Google News: headlines by query (locale optional)
 const appleNews = await dumbAPISources.get('googlenews', { q: 'Apple', lang: 'en', country: 'US', max: 5 });
-// => { query, lang, country, items: [{ title, link, published, source, snippet }], total, source: 'googlenews' }
+// Only news from the past 24 hours
+const appleNews24h = await dumbAPISources.get('googlenews', { q: 'Apple', lang: 'en', country: 'US', max: 5, past24h: true });
+// Exclude sports (broad) and add custom exclusions (keywords/domains)
+const appleFiltered = await dumbAPISources.get('googlenews', {
+  q: 'Apple',
+  lang: 'en',
+  country: 'US',
+  max: 10,
+  past24h: true,
+  excludeSports: true,
+  excludeKeywords: ['tennis', 'galopp', 'equestrian', 'hästsport'],
+  excludeDomains: ['espn.com', 'theathletic.com', 'svenskafans.com']
+});
 ```
 
 ## API Details (Inputs/Outputs)
@@ -125,8 +137,10 @@ Notes:
 ### 3) Google News (RSS)
 - Inputs accepted by `get('googlenews', ...)`:
   - Query string, e.g., `"Apple"`, or
-  - Options object: `{ q: string, lang?: string, country?: string, max?: number }`
-    - `lang` defaults to `en`, `country` defaults to `US`, `max` defaults to `10`
+  - Options object: `{ q: string, lang?: string, country?: string, max?: number, past24h?: boolean, excludeSports?: boolean, excludeKeywords?: string|string[], excludeDomains?: string|string[] }`
+    - `lang` defaults to `en`, `country` defaults to `US`, `max` defaults to `10`, `past24h` defaults to `false`, `excludeSports` defaults to `false`
+    - `excludeKeywords`: additional words/phrases to exclude (pre-query and post-filter)
+    - `excludeDomains`: domains to exclude (pre-query via `site:` and post-filter)
 - Output:
   ```json
   {
@@ -144,6 +158,9 @@ Notes:
 Notes:
 - Uses public Google News RSS endpoint; no API key required.
 - Results depend on locale (`lang`, `country`).
+- Set `past24h: true` to filter results to items published within the last 24 hours.
+- Set `excludeSports: true` to remove common sports-related headlines (English/Swedish, includes horse sports) and blacklist popular sports domains by default (augment with `excludeDomains`).
+- Use `excludeKeywords` and `excludeDomains` for additional precise filtering.
 
 ## Available Methods
 - `get(source, query, options?)`
