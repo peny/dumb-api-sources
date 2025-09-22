@@ -46,14 +46,17 @@ class GoogleNewsAPI {
 
     const allExcludeKeywords = [...new Set([...keywordList, ...preExcludeSportsKeywords])];
     const defaultSportsDomains = excludeSports ? [
-      // English/global sports outlets
-      'espn.com', 'espncricinfo.com', 'cbssports.com', 'foxsports.com', 'nbcsports.com', 'skysports.com', 'tsn.ca', 'theathletic.com', 'bleacherreport.com', 'goal.com', 'si.com', 'sports.yahoo.com', 'bbc.co.uk/sport', 'bbc.com/sport',
+      // English/global sports outlets (include common regionals)
+      'espn.com', 'espn.co.uk', 'espn.com.au', 'espncricinfo.com', 'cbssports.com', 'foxsports.com', 'nbcsports.com', 'skysports.com', 'tsn.ca', 'theathletic.com', 'bleacherreport.com', 'goal.com', 'si.com', 'sports.yahoo.com', 'bbc.co.uk/sport', 'bbc.com/sport',
+      // Tennis
+      'lavercup.com', 'atptour.com', 'wtatennis.com', 'tennis.com', 'tennis365.com',
       // Hockey-specific
       'nhl.com', 'thehockeynews.com',
       // Soccer/football
       'uefa.com', 'fifa.com', 'premierleague.com',
-      // Swedish sports outlets
-      'svt.se/sport', 'svenskafans.com', 'aftonbladet.se/sportbladet', 'expressen.se/sport', 'fotbollskanalen.se', 'hockeysverige.se'
+      // Swedish sports outlets (incl. horse racing)
+      'svt.se/sport', 'svenskafans.com', 'aftonbladet.se/sportbladet', 'expressen.se/sport', 'fotbollskanalen.se', 'hockeysverige.se',
+      'svenskgalopp.se', 'travsport.se', 'atg.se', 'broparken.se', 'bropark.se'
     ] : [];
     const allExcludeDomains = [...new Set([...domainList, ...defaultSportsDomains])];
 
@@ -92,11 +95,10 @@ class GoogleNewsAPI {
       const defaults = excludeSports ? preExcludeSportsKeywords : [];
       const combined = [...new Set([...(allExcludeKeywords || []), ...defaults])];
       if (combined.length > 0) {
-        const escaped = combined.map(k => k.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&'));
-        const pattern = new RegExp(`\\b(${escaped.join('|')})\\b`, 'iu');
+        const needles = combined.map(k => k.toLowerCase());
         items = items.filter(i => {
           const haystack = [i.title, i.snippet, i.link, i.source].filter(Boolean).join(' ').toLowerCase();
-          return !pattern.test(haystack);
+          return !needles.some(n => n && haystack.includes(n));
         });
       }
     }
