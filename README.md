@@ -46,6 +46,17 @@ const aapl = await dumbAPISources.get('twelvedata', 'AAPL');
 
 // TwelveData: detailed quote
 const aaplQuote = await dumbAPISources.getQuote('twelvedata', 'AAPL');
+// Fallback: If TwelveData doesn't have a symbol, use Yahoo automatically
+// Example: OMXS30 index (try TD first, then Yahoo fallback)
+const omxs30 = await dumbAPISources.get('twelvedata', 'OMXS30', { fallback: 'yahoo' });
+// Or directly via yahoo
+const omxs30Yahoo = await dumbAPISources.get('yahoo', 'OMXS30');
+
+// Yahoo aliases and extra fields
+// You can use an alias for Nordea Global Enhanced
+const nordea = await dumbAPISources.get('yahoo', 'NORDEA_GLOBAL_ENHANCED');
+// => includes dailyChangePercent and ytdChangePercent
+
 // => { symbol, name, price, change, changePercent, volume, high, low, open, previousClose, timestamp, source }
 
 // Open‑Meteo: weather by place name
@@ -165,8 +176,13 @@ Notes:
 ## Available Methods
 - `get(source, query, options?)`
 - `getQuote(source, symbol)` (TwelveData)
+  - Note: Yahoo quote/price includes `dailyChangePercent` and `ytdChangePercent` when available
 - `getAvailableSources()`
 - `addSource(name, apiInstance)`
+
+Notes:
+- `get('twelvedata', symbol, { fallback: 'yahoo' })` will transparently try Yahoo if TwelveData fails.
+- Yahoo provider includes helpful aliases for `OMXS30` and `OMXS30GI` (tries known Yahoo symbols and ETFs).
 
 ## Development
 
