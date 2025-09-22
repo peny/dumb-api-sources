@@ -50,10 +50,19 @@ async function example() {
     console.log('New York weather:', nycWeather);
     console.log('');
 
-    // Example 4: Google News example
-    console.log('🗞️ Getting Google News headlines for Apple...');
-    const gn = await api.get('googlenews', { q: 'Apple', lang: 'en', country: 'US', max: 5 });
-    console.log('Google News (Apple):', gn);
+    // Example 4: Google News example with stronger filtering
+    console.log('🗞️ Getting Google News headlines for Apple (filtered)...');
+    const gn = await api.get('googlenews', {
+      q: 'Apple',
+      lang: 'en',
+      country: 'US',
+      max: 10,
+      past24h: true,
+      excludeSports: true,
+      excludeKeywords: ['tennis', 'galopp', 'equestrian', 'hästsport'],
+      excludeDomains: ['espn.com', 'theathletic.com', 'svenskafans.com']
+    });
+    console.log('Google News (Apple, filtered):', gn);
     console.log('');
 
     // Example 5: Error handling
