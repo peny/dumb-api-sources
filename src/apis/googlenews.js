@@ -36,14 +36,20 @@ class GoogleNewsAPI {
     // Optional: exclude common sports content
     if (excludeSports) {
       const sportsKeywords = [
-        // English
+        // English (general)
         'sport', 'sports', 'football', 'soccer', 'nba', 'nfl', 'mlb', 'nhl', 'tennis', 'golf', 'cricket', 'rugby',
         'fifa', 'uefa', 'premier league', 'la liga', 'serie a', 'bundesliga', 'champions league', 'world cup',
         'olympic', 'olympics', 'marathon', 'motogp', 'formula 1', 'f1', 'boxing', 'ufc', 'mma', 'ncaaf', 'ncaab',
-        // Swedish
+        // English (horse-related)
+        'horse', 'horses', 'equestrian', 'equestrianism', 'horse racing', 'horseracing', 'thoroughbred', 'steeplechase',
+        'show jumping', 'dressage', 'eventing', 'polo', 'rodeo', 'harness racing', 'sulky', 'trotting', 'trot', 'gallop',
+        // Swedish (general)
         'idrott', 'fotboll', 'ishockey', 'hockey', 'handboll', 'innebandy', 'bandy', 'friidrott', 'skidor',
         'längdskidor', 'alpint', 'skridsko', 'shl', 'allsvenskan', 'superettan', 'damallsvenskan', 'elitserien',
-        'svenska cupen', 'landslaget', 'vm', 'em', 'sm-guld'
+        'svenska cupen', 'landslaget', 'vm', 'em', 'sm-guld',
+        // Swedish (horse-related)
+        'häst', 'hästar', 'hästsport', 'ridsport', 'ridning', 'trav', 'galopp', 'ponnytrav', 'ponnygalopp', 'monté',
+        'hoppning', 'dressyr', 'fälttävlan', 'hästpolo', 'sulkylopp'
       ];
       const pattern = new RegExp(`\\b(${sportsKeywords.map(k => k.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')).join('|')})\\b`, 'i');
       items = items.filter(i => {
